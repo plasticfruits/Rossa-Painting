@@ -1,6 +1,7 @@
 # %% Libraries
 import pandas as pd
 import numpy as np
+import datetime
 from utils import *
 
 
@@ -45,7 +46,30 @@ stor_col_dtype = {
 }
 # Add store static data
 store = pd.read_csv("./data/store.csv", dtype=stor_col_dtype)
+store.head()
 
+
+#########
+promo_months = pd.DataFrame()
+parent_list = []
+for i in store_promos["PromoInterval"]:
+    dates_list = []
+    dates = i.split(",")
+    for j in dates:
+        try:
+            date = pd.to_datetime(j, format="%b")
+            dates_list.append(date)
+        except:
+            continue
+    month_ser = pd.DataFrame(dates_list)[0].dt.month.tolist()
+    promo_months.append(month_ser)
+    print(promo_months)
+#    print(month_ser)
+#    promo_months.append(month_ser)
+#    parent_list.append(month_ser)
+
+
+# Filter unwanted columns out
 store_cols = ["Store", "StoreType", "Assortment", "CompetitionDistance"]
 store_clean = store.loc[:, store_cols]
 
@@ -103,6 +127,7 @@ enrich_cols = [
 ]
 
 enrich_df = data_enrich.loc[:, enrich_cols]
+enrich_df = enrich_df.round(decimals=1)
 enrich_df = pd.get_dummies(enrich_df, columns=["Assortment"], drop_first=True)
 
 

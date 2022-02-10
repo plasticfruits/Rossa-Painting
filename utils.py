@@ -27,6 +27,32 @@ def clean_cols(df):
     return df
 
 
+def clean_cols_test(df):
+    """
+    input:
+    Output:
+    """
+    # Clean Store
+    df = df.dropna(subset=["Store"])
+    # DayOfWeek
+    df = df.drop("DayOfWeek", axis=1)
+    # Open Col
+    # index_drop = df[(df["Sales"] < 1) & (df["Open"] != "1")].index
+    # df.drop(index_drop, inplace=True)
+    df["Open"] = df["Open"].fillna("1")
+    df = df.drop("Open", axis=1)
+    # Promo
+    df["Promo"] = df["Promo"].fillna("3")
+    df["Promo"] = df["Promo"].astype(int)
+    # StateHoliday
+    df["StateHoliday"] = df["StateHoliday"].replace({"0": "d"})
+    df["StateHoliday"] = df["StateHoliday"].fillna("missing")
+    # SchoolHoliday
+    df["SchoolHoliday"] = df["SchoolHoliday"].fillna("missing")
+
+    return df
+
+
 def date_expand(df):
     """
     Input: a df with column "Date"
